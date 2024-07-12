@@ -1,0 +1,21 @@
+def get_plan(objects, init, goal):
+    plan = []
+    at_predicate = [p for p in init if p[0] == 'at'][0]
+    current_location = at_predicate[1]
+    goal_location = [p[1] for p in goal if p[0] == 'at'][0]
+
+    while current_location != goal_location:
+        next_location = [p[2] for p in init if p[0] == 'ontrail' and p[1] == current_location]
+        if not next_location:
+            break
+        next_location = next_location[0]
+
+        if (next_location, 'ishill') in init:
+            action = f'(climb {current_location} {next_location})'
+        else:
+            action = f'(walk {current_location} {next_location})'
+
+        plan.append(action)
+        current_location = next_location
+
+    return plan

@@ -1,0 +1,3 @@
+The simple strategy for solving all problems in this domain without using search is to follow the "next stop scanning" approach. In this strategy, the elevator starts at the lowest floor and moves upwards, stopping at every floor it encounters. At each floor, the elevator checks if there are any passengers to pick up (board) or drop off (depart). Once the elevator reaches the highest floor, it reverses its direction and moves downwards, stopping at every floor and performing the same checks.
+
+This strategy ensures that all passengers will eventually be picked up and dropped off at their destination floors. It may not be the most efficient solution in terms of the number of actions, but it guarantees that the problem will be solved without the need for search algorithms.

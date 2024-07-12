@@ -1,0 +1,37 @@
+def get_plan(objects, init, goal):
+    floors = sorted([obj[0] for obj in objects if obj[1] == 'floor'])
+    passengers = [obj[0] for obj in objects if obj[1] == 'passenger']
+    
+    origins = {}
+    destinations = {}
+    for atom in init:
+        if atom[0] == 'origin':
+            origins[atom[1]] = atom[2]
+        elif atom[0] == 'destin':
+            destinations[atom[1]] = atom[2]
+    
+    plan = []
+    
+    # Move from lowest to highest floor
+    for i in range(len(floors) - 1):
+        f1, f2 = floors[i], floors[i + 1]
+        plan.append(f'(up {f1} {f2})')
+        
+        for p in passengers:
+            if origins[p] == f2:
+                plan.append(f'(board {f2} {p})')
+            if destinations[p] == f2:
+                plan.append(f'(depart {f2} {p})')
+    
+    # Move from highest to lowest floor
+    for i in range(len(floors) - 1, 0, -1):
+        f1, f2 = floors[i], floors[i - 1]
+        plan.append(f'(down {f1} {f2})')
+        
+        for p in passengers:
+            if origins[p] == f2:
+                plan.append(f'(board {f2} {p})')
+            if destinations[p] == f2:
+                plan.append(f'(depart {f2} {p})')
+    
+    return plan

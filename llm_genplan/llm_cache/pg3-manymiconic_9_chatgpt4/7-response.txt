@@ -1,0 +1,5 @@
+My apologies, it appears that I misunderstood your question. You seem to be receiving a SyntaxError in your code. Based on the code provided, the error appears to be outside of the task definition. The task definition itself is valid PDDL syntax.
+
+However, I can't directly troubleshoot the error without the full context of the code. The error message is indicating a syntax error at line 93, but the task definition you provided doesn't have that many lines. The error seems to be in another part of your code, outside the task definition.
+
+If you could provide the full context of the code or the specific part of the code where the error occurs, I would be happy to help you further.

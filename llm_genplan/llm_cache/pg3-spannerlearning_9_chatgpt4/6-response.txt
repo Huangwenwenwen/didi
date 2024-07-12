@@ -1,0 +1,39 @@
+def get_plan(objects, init, goal):
+    plan = []
+
+    man = [obj for obj, obj_type in objects if obj_type == "man"][0]
+
+    # Find all locations and their links
+    locations = [obj for obj, obj_type in objects if obj_type == "location"]
+    links = {l1: l2 for pred, *args in init if pred == "link" and len(args) == 2 for l1, l2 in [args]}
+
+    # Find all spanners and nuts and their initial locations
+    spanners = {obj: loc for pred, *args in init if pred == "at" and len(args) == 2 and args[0].startswith("spanner") for obj, loc in [args]}
+    nuts = {obj: loc for pred, *args in init if pred == "at" and len(args) == 2 and args[0].startswith("nut") for obj, loc in [args]}
+
+    current_location = [loc for pred, *args in init if pred == "at" and len(args) == 2 and args[0] == man for _, loc in [args]][0]
+
+    # Traverse the locations
+    while current_location in links:
+        next_location = links[current_location]
+
+        # Pick up spanners at the current location
+        for spanner, loc in spanners.items():
+            if loc == current_location:
+                plan.append(f"(pickup_spanner {current_location} {spanner} {man})")
+                spanners[spanner] = man
+
+        # Move to the next location
+        plan.append(f"(walk {current_location} {next_location} {man})")
+        current_location = next_location
+
+    # Tighten nuts at the gate
+    for nut, loc in nuts.items():
+        if loc == current_location:
+            for spanner, carrier in spanners.items():
+                if carrier == man:
+                    plan.append(f"(tighten_nut {current_location} {spanner} {man} {nut})")
+                    spanners[spanner] = None  # Set spanner to unusable
+                    break
+
+    return plan

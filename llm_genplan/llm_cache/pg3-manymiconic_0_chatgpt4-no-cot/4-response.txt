@@ -1,0 +1,40 @@
+def get_plan(objects, init, goal):
+    plan = []
+    passengers = [p for p, t in objects if t == "passenger"]
+    origins = {p: f for p, f in [tuple(atom[1:]) for atom in init if atom[0] == "origin"]}
+    destinations = {p: f for p, f in [tuple(atom[1:]) for atom in init if atom[0] == "destin"]}
+    current_floor = next(atom[1] for atom in init if atom[0] == "lift-at")
+    
+    for passenger in passengers:
+        origin_floor = origins[passenger]
+        destin_floor = destinations[passenger]
+        
+        # Move to the origin floor
+        while current_floor != origin_floor:
+            if int(current_floor[1:].split("_")[0]) < int(origin_floor[1:].split("_")[0]):
+                next_floor = "f" + str(int(current_floor[1:].split("_")[0]) + 1) + "_" + current_floor.split("_")[1]
+                plan.append(f"(up {current_floor} {next_floor})")
+                current_floor = next_floor
+            else:
+                next_floor = "f" + str(int(current_floor[1:].split("_")[0]) - 1) + "_" + current_floor.split("_")[1]
+                plan.append(f"(down {current_floor} {next_floor})")
+                current_floor = next_floor
+        
+        # Board the passenger
+        plan.append(f"(board {current_floor} {passenger})")
+        
+        # Move to the destination floor
+        while current_floor != destin_floor:
+            if int(current_floor[1:].split("_")[0]) < int(destin_floor[1:].split("_")[0]):
+                next_floor = "f" + str(int(current_floor[1:].split("_")[0]) + 1) + "_" + current_floor.split("_")[1]
+                plan.append(f"(up {current_floor} {next_floor})")
+                current_floor = next_floor
+            else:
+                next_floor = "f" + str(int(current_floor[1:].split("_")[0]) - 1) + "_" + current_floor.split("_")[1]
+                plan.append(f"(down {current_floor} {next_floor})")
+                current_floor = next_floor
+        
+        # Depart the passenger
+        plan.append(f"(depart {current_floor} {passenger})")
+    
+    return plan
